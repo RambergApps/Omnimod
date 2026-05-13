@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OmniMod – Mobilversjon</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --el-red:        #C8102E;
+    --el-red-dark:   #9e0c24;
+    --el-red-light:  #f7e4e7;
+    --el-red-mid:    #f0c0c8;
+    --el-charcoal:   #1c1c1c;
+    --el-gray-dark:  #3d3d3d;
+    --el-gray:       #6b6b6b;
+    --el-gray-light: #a8a8a8;
+    --el-surface:    #f6f6f6;
+    --el-surface2:   #efefef;
+    --el-border:     #e0e0e0;
+    --el-white:      #ffffff;
+    --warn:          #b85c00;
+    --warn-bg:       #fff4e5;
+    --warn-border:   #f0a843;
+    --success:       #1a6e3e;
+    --success-bg:    #edf7f1;
+    --success-border:#5dba8a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ── OUTER STAGE ── */
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #d0d0d0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 60px;
+    gap: 0;
+  }
+
+  .stage-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #888;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  /* ── PHONE FRAME ── */
+  .phone-frame {
+    width: 390px;
+    background: #1a1a1a;
+    border-radius: 48px;
+    padding: 14px;
+    box-shadow:
+      0 0 0 1px #333,
+      0 30px 80px rgba(0,0,0,0.5),
+      inset 0 0 0 1px #444;
+    position: relative;
+  }
+
+  /* notch */
+  .phone-notch {
+    width: 120px;
+    height: 34px;
+    background: #1a1a1a;
+    border-radius: 0 0 20px 20px;
+    margin: 0 auto 0;
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .notch-cam {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #2a2a2a;
+    border: 1px solid #333;
+  }
+  .notch-pill {
+    width: 60px; height: 10px;
+    border-radius: 10px;
+    background: #111;
+    border: 1px solid #333;
+  }
+
+  /* side buttons */
+  .phone-frame::before {
+    content: '';
+    position: absolute;
+    right: -3px; top: 100px;
+    width: 4px; height: 70px;
+    background: #2a2a2a;
+    border-radius: 0 3px 3px 0;
+    box-shadow: 0 90px 0 #2a2a2a;
+  }
+  .phone-frame::after {
+    content: '';
+    position: absolute;
+    left: -3px; top: 80px;
+    width: 4px; height: 40px;
+    background: #2a2a2a;
+    border-radius: 3px 0 0 3px;
+    box-shadow: 0 56px 0 #2a2a2a, 0 110px 0 #2a2a2a;
+  }
+
+  .phone-screen {
+    border-radius: 36px;
+    overflow: hidden;
+    background: var(--el-white);
+    height: 780px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    /* hide scrollbar */
+    scrollbar-width: none;
+  }
+  .phone-screen::-webkit-scrollbar { display: none; }
+
+  /* status bar */
+  .status-bar {
+    background: var(--el-red);
+    padding: 44px 24px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+    letter-spacing: 0.02em;
+  }
+  .status-icons { display: flex; gap: 5px; align-items: center; }
+  .status-bar-signal { font-size: 10px; }
+
+  /* ── MOBILE CONTENT ── */
+
+  .m-header {
+    background: var(--el-red);
+    padding: 4px 20px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .m-header::after {
+    content: '';
+    position: absolute;
+    right: -40px; top: -40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .m-wordmark {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+  .m-logo-box {
+    background: white; color: var(--el-red);
+    font-size: 12px; font-weight: 700;
+    padding: 3px 6px 2px; border-radius: 2px; line-height: 1;
+  }
+  .m-logo-text {
+    font-size: 10px; font-weight: 300;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.65);
+  }
+  .m-header-tag {
+    font-size: 9px; font-weight: 500; letter-spacing: 0.1em;
+    text-transform: uppercase; color: rgba(255,255,255,0.55);
+    margin-bottom: 6px; position: relative; z-index: 1;
+  }
+  .m-header h1 {
+    font-size: 20px; font-weight: 600; color: white;
+    line-height: 1.2; margin-bottom: 6px;
+    position: relative; z-index: 1;
+  }
+  .m-header-sub {
+    font-size: 12px; color: rgba(255,255,255,0.65);
+    font-weight: 300; line-height: 1.45;
+    position: relative; z-index: 1;
+  }
+  .m-badges {
+    display: flex; flex-wrap: wrap; gap: 5px;
+    margin-top: 14px; position: relative; z-index: 1;
+  }
+  .m-badge {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 2px; padding: 3px 8px;
+    font-size: 9px; font-weight: 500;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    color: rgba(255,255,255,0.85);
+  }
+
+  /* BODY */
+  .m-body { padding: 20px 16px; }
+
+  /* SECTION */
+  .m-section { margin-bottom: 28px; }
+  .m-section-title {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 14px; padding-bottom: 10px;
+    border-bottom: 2px solid var(--el-red);
+    flex-wrap: wrap;
+  }
+  .m-section-num {
+    font-size: 9px; font-weight: 600; color: var(--el-red);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    background: var(--el-red-light); border-radius: 2px;
+    padding: 2px 7px; white-space: nowrap;
+  }
+  .m-section-title h2 {
+    font-size: 14px; font-weight: 600; color: var(--el-charcoal);
+    letter-spacing: -0.01em; line-height: 1.3;
+  }
+
+  /* RULE CARDS — 3 col on mobile */
+  .m-rule-grid {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 8px; margin-bottom: 12px;
+  }
+  .m-rule-card {
+    background: var(--el-surface);
+    border: 1px solid var(--el-border);
+    border-top: 3px solid var(--el-red);
+    border-radius: 6px; padding: 10px 8px; text-align: center;
+  }
+  .m-rule-label {
+    font-size: 9px; font-weight: 500; color: var(--el-gray);
+    text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px;
+  }
+  .m-rule-value {
+    font-size: 18px; font-weight: 600; color: var(--el-red);
+    font-family: 'DM Mono', monospace; line-height: 1; margin-bottom: 3px;
+  }
+  .m-rule-desc { font-size: 9px; color: var(--el-gray); }
+
+  /* INFO BOX */
+  .m-info-box {
+    border-radius: 6px; padding: 11px 13px; margin-bottom: 10px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .m-info-box.red    { background: var(--el-red-light); border-left: 3px solid var(--el-red); }
+  .m-info-box.orange { background: var(--warn-bg);      border-left: 3px solid var(--warn-border); }
+  .m-info-box.green  { background: var(--success-bg);   border-left: 3px solid var(--success-border); }
+  .m-ib-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .m-ib-title { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+  .m-info-box.red .m-ib-title    { color: var(--el-red-dark); }
+  .m-info-box.orange .m-ib-title { color: var(--warn); }
+  .m-info-box.green .m-ib-title  { color: var(--success); }
+  .m-ib-text { font-size: 11.5px; color: var(--el-gray-dark); line-height: 1.5; }
+
+  /* FLOW — vertical on mobile */
+  .m-flow {
+    background: var(--el-surface); border: 1px solid var(--el-border);
+    border-radius: 6px; padding: 12px 14px; margin-bottom: 10px;
+  }
+  .m-flow-label {
+    font-size: 9px; font-weight: 600; color: var(--el-gray);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;
+  }
+  .m-flow-list { display: flex; flex-direction: column; gap: 4px; }
+  .m-flow-step {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .m-flow-box {
+    background: var(--el-white); border: 1px solid var(--el-border);
+    border-radius: 2px; padding: 5px 10px;
+    font-size: 11px; font-weight: 500; color: var(--el-charcoal);
+    flex: 1;
+  }
+  .m-flow-box.active { background: var(--el-red); color: white; border-color: var(--el-red); }
+  .m-flow-box.reject { background: var(--el-red-light); color: var(--el-red-dark); border-color: var(--el-red-mid); }
+  .m-flow-box.ok     { background: var(--success-bg); color: var(--success); border-color: var(--success-border); }
+  .m-flow-arrow { font-size: 10px; color: var(--el-gray-light); transform: rotate(90deg); flex-shrink: 0; }
+
+  /* FORBIDDEN TABLE — 2 col */
+  .m-forbidden-table {
+    display: grid; grid-template-columns: 1fr 1fr;
+    border: 1px solid var(--el-border); border-radius: 6px;
+    overflow: hidden;
+  }
+  .m-forbidden-row {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: flex-start;
+    padding: 14px 10px 12px; text-align: center;
+    border-right: 1px solid var(--el-border);
+    border-bottom: 1px solid var(--el-border);
+  }
+  .m-forbidden-row:nth-child(2n) { border-right: none; }
+  .m-forbidden-row:nth-child(5),
+  .m-forbidden-row:nth-child(6)  { border-bottom: none; }
+  .m-forbidden-icon { height: 44px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+  .m-forbidden-icon svg { width: 44px; height: 44px; }
+  .m-forbidden-text { font-size: 11px; color: var(--el-gray-dark); line-height: 1.4; }
+  .m-forbidden-text strong { color: var(--el-charcoal); }
+
+  /* MODE CARDS — stacked */
+  .m-mode-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+  .m-mode-card { border: 1px solid var(--el-border); border-radius: 6px; overflow: hidden; }
+  .m-mode-header {
+    padding: 9px 13px; font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; gap: 7px;
+    background: var(--el-red); color: white;
+  }
+  .m-mode-card.auto .m-mode-header    { background: var(--el-red-dark); }
+  .m-mode-card.autorel .m-mode-header { background: var(--el-charcoal); }
+  .m-mode-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.5); flex-shrink: 0; }
+  .m-mode-body { padding: 10px 13px; font-size: 11.5px; color: var(--el-gray-dark); background: var(--el-surface); line-height: 1.5; }
+  .m-mode-body strong { color: var(--el-charcoal); }
+
+  /* STEP LIST */
+  .m-step-list { list-style: none; display: flex; flex-direction: column; gap: 7px; margin-bottom: 12px; }
+  .m-step-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: var(--el-charcoal); line-height: 1.5; }
+  .m-step-num {
+    min-width: 20px; height: 20px; border-radius: 2px;
+    background: var(--el-red); color: white;
+    font-size: 10px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ERROR ITEMS */
+  .m-error-list { display: flex; flex-direction: column; gap: 7px; }
+  .m-error-item {
+    background: var(--el-surface); border: 1px solid var(--el-border);
+    border-left: 3px solid var(--el-gray-light);
+    border-radius: 6px; padding: 10px 12px;
+  }
+  .m-error-item.critical  { border-left-color: var(--el-red); }
+  .m-error-item.warn-item { border-left-color: var(--warn-border); }
+  .m-error-top { display: flex; align-items: flex-start; gap: 9px; margin-bottom: 4px; }
+  .m-error-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .m-error-title { font-size: 12px; font-weight: 600; color: var(--el-charcoal); }
+  .m-error-text  { font-size: 11px; color: var(--el-gray-dark); line-height: 1.5; padding-left: 23px; }
+  .m-error-tag {
+    display: inline-block; margin-top: 5px; margin-left: 23px;
+    font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 2px;
+  }
+  .tag-manual { background: var(--el-red-light); color: var(--el-red-dark); border: 1px solid var(--el-red-mid); }
+  .tag-auto   { background: var(--el-surface2);  color: var(--el-gray-dark); border: 1px solid var(--el-border); }
+  .tag-stop   { background: var(--warn-bg);       color: var(--warn);        border: 1px solid var(--warn-border); }
+
+  /* DIVIDER */
+  .m-divider { height: 1px; background: var(--el-border); margin: 24px 0; }
+
+  /* QUICK REF */
+  .m-quick-ref {
+    background: var(--el-red); border-radius: 6px;
+    padding: 16px 18px; margin-top: 4px;
+  }
+  .m-qr-label {
+    font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.6);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;
+  }
+  .m-qr-list { display: flex; flex-direction: column; gap: 6px; }
+  .m-qr-item { font-size: 12px; color: rgba(255,255,255,0.9); display: flex; gap: 8px; }
+  .m-qr-item .tick { color: rgba(255,255,255,0.5); font-weight: 600; flex-shrink: 0; }
+
+  /* FOOTER */
+  .m-footer {
+    background: var(--el-charcoal); padding: 14px 16px;
+    display: flex; flex-direction: column; gap: 2px;
+    font-size: 10px; color: rgba(255,255,255,0.4); text-align: center;
+  }
+  .m-footer strong { color: rgba(255,255,255,0.7); }
+
+  /* scroll hint */
+  .scroll-hint {
+    margin-top: 14px;
+    font-size: 11px; color: #999;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .scroll-hint::before, .scroll-hint::after {
+    content: ''; flex: 1; height: 1px; background: #bbb;
+  }
+</style>
+</head>
+<body>
+
+<div class="stage-label">Mobilversjon · 390px</div>
+
+<div class="phone-frame">
+  <div class="phone-notch">
+    <div class="notch-cam"></div>
+    <div class="notch-pill"></div>
+  </div>
+
+  <div class="phone-screen">
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+      <span>09:41</span>
+      <div class="status-icons">
+        <span class="status-bar-signal">▲▲▲</span>
+        <span>WiFi</span>
+        <span>100%</span>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <div class="m-header">
+      <div class="m-wordmark">
+        <div class="m-logo-box">E</div>
+        <div class="m-logo-text">Element Logic</div>
+      </div>
+      <div class="m-header-tag">Operatøropplæring · Ramberg Langhus</div>
+      <h1>OmniMod Sorteringsanlegg</h1>
+      <div class="m-header-sub">Hurtigguide for daglig drift</div>
+      <div class="m-badges">
+        <span class="m-badge">Inbound</span>
+        <span class="m-badge">Ikke tillatte pakker</span>
+        <span class="m-badge">Outbound</span>
+        <span class="m-badge">Put-to-Light</span>
+        <span class="m-badge">Feilscenarier</span>
+        <span class="m-badge">HMI-feilhåndtering</span>
+      </div>
+    </div>
+
+    <div class="m-body">
+
+      <!-- 01 INBOUND -->
+      <div class="m-section">
+        <div class="m-section-title">
+          <div class="m-section-num">01 · Inbound</div>
+          <h2>Pakkelasting på transportbånd</h2>
+        </div>
+        <div class="m-rule-grid">
+          <div class="m-rule-card">
+            <div class="m-rule-label">Min. vekt</div>
+            <div class="m-rule-value">0,2</div>
+            <div class="m-rule-desc">kg · avvises</div>
+          </div>
+          <div class="m-rule-card">
+            <div class="m-rule-label">Maks. vekt</div>
+            <div class="m-rule-value">25</div>
+            <div class="m-rule-desc">kg · avvises</div>
+          </div>
+          <div class="m-rule-card">
+            <div class="m-rule-label">Maks. lengde</div>
+            <div class="m-rule-value">0,8</div>
+            <div class="m-rule-desc">m · lengste side</div>
+          </div>
+        </div>
+        <div class="m-info-box red">
+          <div class="m-ib-icon">🏷️</div>
+          <div>
+            <div class="m-ib-title">Etikett alltid opp</div>
+            <div class="m-ib-text">Etiketten skal alltid peke <strong>oppover</strong>. Feil orientering = ikke registrert.</div>
+          </div>
+        </div>
+        <div class="m-info-box red">
+          <div class="m-ib-icon">↔️</div>
+          <div>
+            <div class="m-ib-title">Lengderetning mot OmniMod</div>
+            <div class="m-ib-text">Pakkens <strong>lengste side</strong> inn mot OmniMod-pakkebåndet for å klare vinkelen.</div>
+          </div>
+        </div>
+        <div class="m-flow">
+          <div class="m-flow-label">Inbound-flyt</div>
+          <div class="m-flow-list">
+            <div class="m-flow-step"><div class="m-flow-box active">Legg pakke på bånd</div></div>
+            <div class="m-flow-step"><div class="m-flow-arrow">↓</div><div class="m-flow-box">Mettler-scanner + vektmåling</div></div>
+            <div class="m-flow-step"><div class="m-flow-arrow">↓</div><div class="m-flow-box">Dynatec-scanner</div></div>
+            <div class="m-flow-step"><div class="m-flow-arrow">↓</div><div class="m-flow-box ok">OmniMod-bordet</div></div>
+            <div class="m-flow-step"><div class="m-flow-arrow">↓</div><div class="m-flow-box reject">Reject (ved feil)</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="m-divider"></div>
+
+      <!-- 02 IKKE TILLATTE PAKKER -->
+      <div class="m-section">
+        <div class="m-section-title">
+          <div class="m-section-num">02 · Ikke tillatte pakker</div>
+          <h2>Pakker som ikke skal på pakkeanlegget</h2>
+        </div>
+        <p style="font-size:11.5px;color:var(--el-gray-dark);margin-bottom:12px;line-height:1.5;">Kontroller alltid pakken mot disse kriteriene før innlegging på båndet.</p>
+        <div class="m-forbidden-table">
+
+          <div class="m-forbidden-row">
+            <div class="m-forbidden-icon">
+              <svg viewBox="0 0 80 70" xmlns="http://www.w3.org/2000/svg">
+                <rect x="18" y="8" width="44" height="34" rx="4" fill="none" stroke="#C8102E" stroke-width="3.5"/>
+                <circle cx="40" cy="25" r="11" fill="none" stroke="#C8102E" stroke-width="3"/>
+                <circle cx="40" cy="25" r="5" fill="#C8102E"/>
+                <line x1="14" y1="52" x2="66" y2="52" stroke="#C8102E" stroke-width="3" stroke-linecap="round"/>
+                <line x1="20" y1="59" x2="60" y2="59" stroke="#C8102E" stroke-width="2" stroke-linecap="round"/>
+                <line x1="26" y1="65" x2="54" y2="65" stroke="#C8102E" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="m-forbidden-text">Ikke lesbar ovenfra av pakkeskanner</div>
+          </div>
+
+          <div class="m-forbidden-row">
+            <div class="m-forbidden-icon">
+              <svg viewBox="0 0 80 70" xmlns="http://www.w3.org/2000/svg">
+                <line x1="8" y1="62" x2="72" y2="62" stroke="#C8102E" stroke-width="2.5" stroke-linecap="round"/>
+                <g transform="translate(40,34) rotate(28)">
+                  <rect x="-18" y="-18" width="36" height="36" rx="2" fill="none" stroke="#C8102E" stroke-width="3.5"/>
+                  <line x1="-18" y1="-18" x2="18" y2="18" stroke="#C8102E" stroke-width="1.5"/>
+                  <line x1="18" y1="-18" x2="-18" y2="18" stroke="#C8102E" stroke-width="1.5"/>
+                </g>
+                <path d="M 22 20 Q 10 38 14 56" fill="none" stroke="#e06070" stroke-width="2" stroke-dasharray="4 3" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="m-forbidden-text">Kan velte over på siden</div>
+          </div>
+
+          <div class="m-forbidden-row">
+            <div class="m-forbidden-icon">
+              <svg viewBox="0 0 80 70" xmlns="http://www.w3.org/2000/svg">
+                <line x1="8" y1="58" x2="72" y2="58" stroke="#C8102E" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="40" cy="40" r="18" fill="none" stroke="#C8102E" stroke-width="3.5"/>
+                <circle cx="40" cy="58" r="2.5" fill="#C8102E"/>
+              </svg>
+            </div>
+            <div class="m-forbidden-text">Runde — ikke full flate­kontakt med OmniMod</div>
+          </div>
+
+          <div class="m-forbidden-row">
+            <div class="m-forbidden-icon">
+              <svg viewBox="0 0 80 70" xmlns="http://www.w3.org/2000/svg">
+                <rect x="16" y="16" width="48" height="38" rx="2" fill="none" stroke="#C8102E" stroke-width="3"/>
+                <polyline points="16,16 28,6 76,6 76,16" fill="none" stroke="#C8102E" stroke-width="2.5"/>
+                <line x1="64" y1="16" x2="76" y2="6" stroke="#C8102E" stroke-width="2.5"/>
+                <line x1="16" y1="66" x2="64" y2="66" stroke="#C8102E" stroke-width="2" stroke-linecap="round"/>
+                <polyline points="19,63 16,66 19,69" fill="none" stroke="#C8102E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="61,63 64,66 61,69" fill="none" stroke="#C8102E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="6" y1="16" x2="6" y2="54" stroke="#C8102E" stroke-width="2" stroke-linecap="round"/>
+                <polyline points="3,19 6,16 9,19" fill="none" stroke="#C8102E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <polyline points="3,51 6,54 9,51" fill="none" stroke="#C8102E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="m-forbidden-text">Over <strong>60L × 60B × 50H cm</strong></div>
+          </div>
+
+          <div class="m-forbidden-row">
+            <div class="m-forbidden-icon">
+              <svg viewBox="0 0 80 70" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="18" width="32" height="34" rx="17" fill="none" stroke="#C8102E" stroke-width="3"/>
+                <text x="20" y="31" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="700" fill="#C8102E">200</text>
+                <text x="20" y="43" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="700" fill="#C8102E">gram</text>
+                <line x1="42" y1="14" x2="42" y2="58" stroke="#e0c0c4" stroke-width="1.5"/>
+                <path d="M 52 24 Q 52 16 60 16 Q 68 16 68 24" fill="none" stroke="#C8102E" stroke-width="2.5" stroke-linecap="round"/>
+                <rect x="48" y="24" width="24" height="26" rx="2" fill="none" stroke="#C8102E" stroke-width="3"/>
+                <text x="60" y="34" text-anchor="middle" font-family="sans-serif" font-size="7.5" font-weight="700" fill="#C8102E">25</text>
+                <text x="60" y="44" text-anchor="middle" font-family="sans-serif" font-size="7.5" font-weight="700" fill="#C8102E">kg</text>
+              </svg>
+            </div>
+            <div class="m-forbidden-text">Over <strong>25 kg</strong> eller under <strong>200 gram</strong></div>
+          </div>
+
+          <div class="m-forbidden-row">
+            <div class="m-forbidden-icon">
+              <svg viewBox="0 0 80 70" xmlns="http://www.w3.org/2000/svg">
+                <line x1="8" y1="60" x2="72" y2="60" stroke="#C8102E" stroke-width="2.5" stroke-linecap="round"/>
+                <polygon points="40,10 68,60 12,60" fill="none" stroke="#C8102E" stroke-width="3.5" stroke-linejoin="round"/>
+                <line x1="40" y1="10" x2="40" y2="60" stroke="#C8102E" stroke-width="1.5" stroke-dasharray="4 3"/>
+              </svg>
+            </div>
+            <div class="m-forbidden-text">Spisse eller kan sette seg fast i inngang</div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="m-divider"></div>
+
+      <!-- 03 OUTBOUND UI -->
+      <div class="m-section">
+        <div class="m-section-title">
+          <div class="m-section-num">03 · Outbound UI</div>
+          <h2>Tre driftsmoduser for uttak</h2>
+        </div>
+        <div class="m-mode-list">
+          <div class="m-mode-card manual">
+            <div class="m-mode-header"><div class="m-mode-dot"></div>Manuell</div>
+            <div class="m-mode-body">Operatøren velger selv gruppe og ber om uttak. Full kontroll over rekkefølge.</div>
+          </div>
+          <div class="m-mode-card auto">
+            <div class="m-mode-header"><div class="m-mode-dot"></div>Automatisk</div>
+            <div class="m-mode-body">Sender automatisk ut grupper med <strong>minst 3 pakker</strong>. Øvrige venter.</div>
+          </div>
+          <div class="m-mode-card autorel">
+            <div class="m-mode-header"><div class="m-mode-dot"></div>Automatisk frigjøring</div>
+            <div class="m-mode-body">Sender grupper fortløpende uten godkjenning. Høy gjennomstrømning.</div>
+          </div>
+        </div>
+        <div class="m-info-box green">
+          <div class="m-ib-icon">💡</div>
+          <div>
+            <div class="m-ib-title">Tips for god flyt</div>
+            <div class="m-ib-text">Fyll bordet opp, deretter tøm. Rytmen <em>fylle → tømme</em> gir OmniMod tid til å danne fullstendige grupper.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="m-divider"></div>
+
+      <!-- 04 PUT-TO-LIGHT -->
+      <div class="m-section">
+        <div class="m-section-title">
+          <div class="m-section-num">04 · Put-to-Light</div>
+          <h2>Plassering og bekreftelse</h2>
+        </div>
+        <ul class="m-step-list">
+          <li><div class="m-step-num">1</div><div><strong>Put-to-Light-indikatoren</strong> over aktuelt bur lyser opp automatisk.</div></li>
+          <li><div class="m-step-num">2</div><div><strong>Skjerm over outbound</strong> viser lokasjon — ekstra veiledning.</div></li>
+          <li><div class="m-step-num">3</div><div>Plasser pakken i korrekt bur.</div></li>
+          <li><div class="m-step-num">4</div><div>Bekreft: <em>sort-knapp</em> på outbound <strong>eller</strong> <em>tableten</em>.</div></li>
+          <li><div class="m-step-num">5</div><div>Neste gruppe hentes automatisk.</div></li>
+        </ul>
+        <div class="m-info-box orange">
+          <div class="m-ib-icon">⚠️</div>
+          <div>
+            <div class="m-ib-title">Husk bekreftelse</div>
+            <div class="m-ib-text">Uten bekreftelse frigis ikke neste gruppe og flyten stopper.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="m-divider"></div>
+
+      <!-- 05 FEILSCENARIER -->
+      <div class="m-section">
+        <div class="m-section-title">
+          <div class="m-section-num">05 · Feilscenarier</div>
+          <h2>Kjente situasjoner og håndtering</h2>
+        </div>
+        <div class="m-error-list">
+
+          <div class="m-error-item warn-item">
+            <div class="m-error-top">
+              <div class="m-error-icon">🔍</div>
+              <div class="m-error-title">Mettler-scanner leste ikke koden</div>
+            </div>
+            <div class="m-error-text">Gå til scannerstasjonen og scan pakken manuelt med håndholdt scanner.</div>
+            <div class="m-error-tag tag-manual">Manuell scanning</div>
+          </div>
+
+          <div class="m-error-item critical">
+            <div class="m-error-top">
+              <div class="m-error-icon">⚖️</div>
+              <div class="m-error-title">Vektbegrensning overskredet</div>
+            </div>
+            <div class="m-error-text">Utenfor intervall (0,2–25 kg). Feilmelding gis og pakken stoppes ved målepunktet. Ta av manuelt.</div>
+            <div class="m-error-tag tag-stop">Ta av ved målepunkt</div>
+          </div>
+
+          <div class="m-error-item warn-item">
+            <div class="m-error-top">
+              <div class="m-error-icon">📷</div>
+              <div class="m-error-title">Dynatec-scanner klarte ikke å lese koden</div>
+            </div>
+            <div class="m-error-text"><strong>Lydsignal avgis.</strong> Pakken sendes til reject og må skytes med PDA for lokasjonskontroll.</div>
+            <div class="m-error-tag tag-auto">→ Reject + PDA</div>
+          </div>
+
+          <div class="m-error-item warn-item">
+            <div class="m-error-top">
+              <div class="m-error-icon">👁️</div>
+              <div class="m-error-title">OmniMod mistet kontroll på pakken</div>
+            </div>
+            <div class="m-error-text">Kameraene mister sporingen. Pakken til reject — skyt med <strong>PDA</strong> for lokasjonskontroll.</div>
+            <div class="m-error-tag tag-auto">→ Reject + PDA</div>
+          </div>
+
+          <div class="m-error-item warn-item">
+            <div class="m-error-top">
+              <div class="m-error-icon">🚫</div>
+              <div class="m-error-title">Pakken mangler destinasjonsbur</div>
+            </div>
+            <div class="m-error-text">Ingen sorteringsgruppe i systemet. Pakken til reject — skyt med <strong>PDA</strong> for lokasjonskontroll.</div>
+            <div class="m-error-tag tag-auto">→ Reject + PDA</div>
+          </div>
+
+          <div class="m-error-item critical">
+            <div class="m-error-top">
+              <div class="m-error-icon">📦</div>
+              <div class="m-error-title">Pakke på reject – PDA-håndtering</div>
+            </div>
+            <div class="m-error-text">Skyt med <strong>PDA</strong> og <strong>dobbeltsjekk lokasjon</strong> før pakken legges i bur.</div>
+            <div class="m-error-tag tag-manual">PDA + sjekk lokasjon</div>
+          </div>
+
+          <div class="m-error-item warn-item">
+            <div class="m-error-top">
+              <div class="m-error-icon">🔆</div>
+              <div class="m-error-title">Lys-reflektorer langs inbound/outbound</div>
+            </div>
+            <div class="m-error-text">Kan trigge stoppesignal. Sjekk Dynatec-kontrollpanelet for seksjonsstatus.</div>
+            <div class="m-error-tag tag-stop">Sjekk kontrollpanel</div>
+          </div>
+
+          <div class="m-error-item warn-item">
+            <div class="m-error-top">
+              <div class="m-error-icon">🖥️</div>
+              <div class="m-error-title">Feilmeldinger i Dynatec-kontrollpanel</div>
+            </div>
+            <div class="m-error-text">Etter uhell må aktive feilmeldinger kvitteres ut (cleared) før normal drift kan gjenopptas.</div>
+            <div class="m-error-tag tag-stop">Clear feilmeldinger</div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="m-divider"></div>
+
+      <!-- 06 HMI-FEILHÅNDTERING -->
+      <div class="m-section">
+        <div class="m-section-title">
+          <div class="m-section-num">06 · HMI-feilhåndtering</div>
+          <h2>Esketransport og clearing av feilmeldinger</h2>
+        </div>
+        <p style="font-size:11.5px;color:var(--el-gray-dark);margin-bottom:12px;line-height:1.5;">Systemet overvåker alle esker mellom soner. Tre scenarioer å kjenne til:</p>
+
+        <!-- 3 scenario cards stacked -->
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+
+          <div style="border:1px solid var(--el-border);border-radius:6px;overflow:hidden;">
+            <div style="background:var(--success-bg);border-bottom:1px solid var(--success-border);padding:9px 12px;display:flex;align-items:center;gap:7px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a6e3e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+              <span style="font-size:11px;font-weight:600;color:var(--success);">Normal transport</span>
+            </div>
+            <div style="padding:9px 12px;background:var(--el-surface);font-size:11px;color:var(--el-gray-dark);line-height:1.5;">Vises med <strong style="color:var(--success);">grønn pil</strong> i HMI. Ingen handling nødvendig.</div>
+          </div>
+
+          <div style="border:1px solid var(--el-border);border-radius:6px;overflow:hidden;">
+            <div style="background:var(--warn-bg);border-bottom:1px solid var(--warn-border);padding:9px 12px;display:flex;align-items:center;gap:7px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b85c00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
+              <span style="font-size:11px;font-weight:600;color:var(--warn);">Timeout – for lang tid</span>
+            </div>
+            <div style="padding:9px 12px;background:var(--el-surface);font-size:11px;color:var(--el-gray-dark);line-height:1.5;"><strong style="color:var(--warn);">Oransje/rød pil</strong> og alarm. Klikk esken → popup åpnes → velg handling.</div>
+          </div>
+
+          <div style="border:1px solid var(--el-border);border-radius:6px;overflow:hidden;">
+            <div style="background:var(--el-red-light);border-bottom:1px solid var(--el-red-mid);padding:9px 12px;display:flex;align-items:center;gap:7px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C8102E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span style="font-size:11px;font-weight:600;color:var(--el-red);">Eske mangler i posisjon</span>
+            </div>
+            <div style="padding:9px 12px;background:var(--el-surface);font-size:11px;color:var(--el-gray-dark);line-height:1.5;">Fysisk fjernet fra båndet. Vises med <strong style="color:var(--el-red);">spørsmålstegn</strong> og alarm i HMI.</div>
+          </div>
+
+        </div>
+
+        <!-- Action buttons explanation -->
+        <div style="font-size:10px;font-weight:600;color:var(--el-gray);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;">Timeout-popup — tre valg</div>
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+          <div style="background:var(--el-surface);border:1px solid var(--el-border);border-radius:6px;padding:10px 12px;">
+            <div style="display:inline-block;font-size:10px;font-weight:600;color:white;background:var(--el-red);border-radius:3px;padding:3px 8px;margin-bottom:5px;">TILBAKESTILL FEIL</div>
+            <div style="font-size:11px;color:var(--el-gray-dark);line-height:1.5;">Systemet prøver transporten på nytt. Bruk når esken er på båndet og årsaken er uklar.</div>
+          </div>
+          <div style="background:var(--el-surface);border:1px solid var(--el-border);border-radius:6px;padding:10px 12px;">
+            <div style="display:inline-block;font-size:10px;font-weight:600;color:var(--el-charcoal);background:var(--el-surface2);border:1px solid var(--el-border);border-radius:3px;padding:3px 8px;margin-bottom:5px;">TRANSFER FERDIG</div>
+            <div style="font-size:11px;color:var(--el-gray-dark);line-height:1.5;">Esken er fremme, men systemet har ikke registrert det. Bekrefter ankomst til neste sone.</div>
+          </div>
+          <div style="background:var(--el-surface);border:1px solid var(--el-border);border-radius:6px;padding:10px 12px;">
+            <div style="display:inline-block;font-size:10px;font-weight:600;color:var(--el-charcoal);background:var(--el-surface2);border:1px solid var(--el-border);border-radius:3px;padding:3px 8px;margin-bottom:5px;">AVBRYT TRANSFER</div>
+            <div style="font-size:11px;color:var(--el-gray-dark);line-height:1.5;">Avbryter transporten. Esken håndteres manuelt utenfor systemet.</div>
+          </div>
+        </div>
+
+        <div class="m-info-box red">
+          <div class="m-ib-icon">❓</div>
+          <div>
+            <div class="m-ib-title">Eske mangler — Slett eske</div>
+            <div class="m-ib-text">Klikk esken med spørsmålstegn i HMI og velg <strong>«Slett eske»</strong> for å fjerne den fra systemet og nullstille alarmen.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUICK REF -->
+      <div class="m-quick-ref">
+        <div class="m-qr-label">⚡ Huskeliste</div>
+        <div class="m-qr-list">
+          <div class="m-qr-item"><span class="tick">✓</span> Etikett peker alltid opp</div>
+          <div class="m-qr-item"><span class="tick">✓</span> Lengderetning mot OmniMod-pakkebåndet</div>
+          <div class="m-qr-item"><span class="tick">✓</span> Vekt: 0,2–25 kg · Maks lengde: 0,8 m</div>
+          <div class="m-qr-item"><span class="tick">✓</span> Bekreft outbound-leveranse etter plassering</div>
+          <div class="m-qr-item"><span class="tick">✓</span> Reject-pakker: skyt med PDA og sjekk lokasjon</div>
+          <div class="m-qr-item"><span class="tick">✓</span> Stopp? Sjekk Dynatec-kontrollpanel</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="m-footer">
+      <div>OmniMod Sorteringsanlegg · <strong>Ramberg Langhus</strong></div>
+      <div><strong>Element Logic AS</strong> · Pilot v1.0</div>
+    </div>
+
+  </div><!-- /phone-screen -->
+</div><!-- /phone-frame -->
+
+<div class="scroll-hint">Scroll inne i skjermen</div>
+
+</body>
+</html>
