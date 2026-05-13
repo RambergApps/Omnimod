@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OmniMod – Opplæringsbrosjyre for operatører</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --el-red:        #C8102E;
+    --el-red-dark:   #9e0c24;
+    --el-red-light:  #f7e4e7;
+    --el-red-mid:    #f0c0c8;
+    --el-charcoal:   #1c1c1c;
+    --el-gray-dark:  #3d3d3d;
+    --el-gray:       #6b6b6b;
+    --el-gray-light: #a8a8a8;
+    --el-surface:    #f6f6f6;
+    --el-surface2:   #efefef;
+    --el-border:     #e0e0e0;
+    --el-white:      #ffffff;
+    --warn:          #b85c00;
+    --warn-bg:       #fff4e5;
+    --warn-border:   #f0a843;
+    --success:       #1a6e3e;
+    --success-bg:    #edf7f1;
+    --success-border:#5dba8a;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--el-charcoal);
+    background: #e4e4e4;
+    line-height: 1.65;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    max-width: 900px;
+    margin: 32px auto;
+    background: var(--el-white);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 28px rgba(0,0,0,0.14);
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--el-red);
+    padding: 40px 48px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    right: -50px; top: -80px;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    right: 100px; bottom: -50px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.07);
+  }
+
+  .el-wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .el-logo-box {
+    background: var(--el-white);
+    color: var(--el-red);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    padding: 4px 8px 3px;
+    line-height: 1;
+    border-radius: 2px;
+  }
+  .el-logo-text {
+    margin-left: 10px;
+    font-size: 12px;
+    font-weight: 300;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .header-tag {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 10px;
+    position: relative; z-index: 1;
+  }
+  .header h1 {
+    font-size: 30px;
+    font-weight: 600;
+    color: #ffffff;
+    line-height: 1.2;
+    margin-bottom: 8px;
+    position: relative; z-index: 1;
+  }
+  .header-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.7);
+    font-weight: 300;
+    position: relative; z-index: 1;
+  }
+  .header-badges {
+    display: flex;
+    gap: 8px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+    position: relative; z-index: 1;
+  }
+  .header-badge {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 2px;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.9);
+    text-transform: uppercase;
+  }
+
+  /* BODY */
+  .body { padding: 40px 48px; }
+
+  .section { margin-bottom: 36px; }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--el-red);
+  }
+  .section-num {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--el-red);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--el-red-light);
+    border-radius: 2px;
+    padding: 3px 8px;
+    white-space: nowrap;
+  }
+  .section-title h2 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--el-charcoal);
+    letter-spacing: -0.01em;
+  }
+
+  /* RULE CARDS */
+  .rule-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .rule-card {
+    background: var(--el-surface);
+    border: 1px solid var(--el-border);
+    border-top: 3px solid var(--el-red);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    text-align: center;
+  }
+  .rule-card .rule-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--el-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .rule-card .rule-value {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--el-red);
+    font-family: 'DM Mono', monospace;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .rule-card .rule-desc {
+    font-size: 12px;
+    color: var(--el-gray);
+  }
+
+  /* INFO BOXES */
+  .info-box {
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .info-box.red    { background: var(--el-red-light); border-left: 3px solid var(--el-red); }
+  .info-box.orange { background: var(--warn-bg);      border-left: 3px solid var(--warn-border); }
+  .info-box.green  { background: var(--success-bg);   border-left: 3px solid var(--success-border); }
+  .info-box .ib-icon { font-size: 17px; margin-top: 1px; flex-shrink: 0; }
+  .info-box .ib-title { font-weight: 600; font-size: 13px; margin-bottom: 3px; }
+  .info-box.red .ib-title    { color: var(--el-red-dark); }
+  .info-box.orange .ib-title { color: var(--warn); }
+  .info-box.green .ib-title  { color: var(--success); }
+  .info-box .ib-text { font-size: 13px; color: var(--el-gray-dark); line-height: 1.55; }
+
+  /* MODE CARDS */
+  .mode-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .mode-card { border: 1px solid var(--el-border); border-radius: var(--radius-sm); overflow: hidden; }
+  .mode-card .mode-header {
+    padding: 11px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--el-red);
+    color: #fff;
+  }
+  .mode-card.auto .mode-header    { background: var(--el-red-dark); }
+  .mode-card.autorel .mode-header { background: var(--el-charcoal); }
+  .mode-card .mode-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.55); flex-shrink: 0; }
+  .mode-card .mode-body { padding: 12px 16px; font-size: 12.5px; color: var(--el-gray-dark); background: var(--el-surface); line-height: 1.55; }
+  .mode-card .mode-body strong { color: var(--el-charcoal); }
+
+  /* STEP LIST */
+  .step-list { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+  .step-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 13px; color: var(--el-charcoal); line-height: 1.55; }
+  .step-num {
+    min-width: 22px; height: 22px;
+    border-radius: 2px;
+    background: var(--el-red);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ERROR LIST */
+  .error-list { display: flex; flex-direction: column; gap: 8px; }
+  .error-item {
+    display: grid;
+    grid-template-columns: 22px 1fr auto;
+    gap: 12px;
+    align-items: start;
+    background: var(--el-surface);
+    border: 1px solid var(--el-border);
+    border-left: 3px solid var(--el-gray-light);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+  }
+  .error-item.critical  { border-left-color: var(--el-red); }
+  .error-item.warn-item { border-left-color: var(--warn-border); }
+  .error-icon { font-size: 16px; margin-top: 1px; }
+  .error-title { font-size: 13px; font-weight: 600; color: var(--el-charcoal); margin-bottom: 2px; }
+  .error-text  { font-size: 12px; color: var(--el-gray-dark); line-height: 1.5; }
+  .error-action {
+    font-size: 11px; font-weight: 500;
+    padding: 3px 10px; border-radius: 2px;
+    white-space: nowrap; align-self: flex-start; margin-top: 2px;
+  }
+  .action-manual { background: var(--el-red-light); color: var(--el-red-dark); border: 1px solid var(--el-red-mid); }
+  .action-auto   { background: var(--el-surface2);  color: var(--el-gray-dark); border: 1px solid var(--el-border); }
+  .action-stop   { background: var(--warn-bg);      color: var(--warn);         border: 1px solid var(--warn-border); }
+
+  /* FORBIDDEN PACKAGES GRID */
+  .forbidden-table {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--el-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .forbidden-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 20px 16px 18px;
+    text-align: center;
+    border-right: 1px solid var(--el-border);
+    border-bottom: 1px solid var(--el-border);
+  }
+  .forbidden-row:nth-child(3),
+  .forbidden-row:nth-child(6) { border-right: none; }
+  .forbidden-row:nth-child(4),
+  .forbidden-row:nth-child(5),
+  .forbidden-row:nth-child(6) { border-bottom: none; }
+  .forbidden-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 64px;
+    margin-bottom: 14px;
+  }
+  .forbidden-icon svg { width: 60px; height: 60px; }
+  .forbidden-text {
+    font-size: 12.5px;
+    color: var(--el-gray-dark);
+    line-height: 1.45;
+  }
+  .forbidden-text strong { color: var(--el-charcoal); }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--el-border); margin: 32px 0; }
+
+  /* FLOW */
+  .flow-visual {
+    background: var(--el-surface);
+    border: 1px solid var(--el-border);
+    border-radius: var(--radius-sm);
+    padding: 18px 22px;
+    margin-bottom: 16px;
+  }
+  .flow-label { font-size: 11px; font-weight: 600; color: var(--el-gray); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+  .flow-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .flow-box { background: var(--el-white); border: 1px solid var(--el-border); border-radius: 2px; padding: 7px 13px; font-size: 12px; font-weight: 500; color: var(--el-charcoal); white-space: nowrap; }
+  .flow-box.active { background: var(--el-red); color: white; border-color: var(--el-red); }
+  .flow-box.reject { background: var(--el-red-light); color: var(--el-red-dark); border: 1px solid var(--el-red-mid); }
+  .flow-box.ok     { background: var(--success-bg); color: var(--success); border-color: var(--success-border); }
+  .flow-arrow { font-size: 13px; color: var(--el-gray-light); }
+
+  /* QUICK REF */
+  .quick-ref { background: var(--el-red); border-radius: var(--radius-sm); padding: 22px 26px; margin-top: 4px; }
+  .quick-ref-label { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.65); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px; }
+  .quick-ref-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 28px; }
+  .quick-ref-item { font-size: 13px; color: rgba(255,255,255,0.92); display: flex; gap: 10px; align-items: flex-start; }
+  .quick-ref-item .tick { color: rgba(255,255,255,0.55); font-weight: 600; flex-shrink: 0; }
+
+  /* FOOTER */
+  .footer {
+    background: var(--el-charcoal);
+    padding: 18px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: rgba(255,255,255,0.45);
+  }
+  .footer strong { color: rgba(255,255,255,0.78); }
+
+  @media print {
+    body { background: white; }
+    .page { box-shadow: none; border-radius: 0; margin: 0; max-width: 100%; }
+    .header, .quick-ref, .footer { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .section { page-break-inside: avoid; }
+  }
+  @media (max-width: 640px) {
+    .body { padding: 24px 20px; }
+    .header { padding: 28px 20px 24px; }
+    .rule-grid { grid-template-columns: 1fr 1fr; }
+    .mode-grid { grid-template-columns: 1fr; }
+    .footer { flex-direction: column; gap: 4px; text-align: center; }
+    .error-item { grid-template-columns: 22px 1fr; }
+    .error-action { display: none; }
+    .quick-ref-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="el-wordmark">
+      <div class="el-logo-box">E</div>
+      <div class="el-logo-text">Element Logic</div>
+    </div>
+    <div class="header-tag">Operatøropplæring · Ramberg Langhus</div>
+    <h1>OmniMod Sorteringsanlegg</h1>
+    <div class="header-sub">Hurtigguide for daglig drift — inbound, outbound og feilhåndtering</div>
+    <div class="header-badges">
+      <span class="header-badge">Inbound</span>
+      <span class="header-badge">Ikke tillatte pakker</span>
+      <span class="header-badge">Outbound</span>
+      <span class="header-badge">Put-to-Light</span>
+      <span class="header-badge">Feilscenarier</span>
+      <span class="header-badge">Kontrollpanel</span>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- 01 INBOUND -->
+    <div class="section">
+      <div class="section-title">
+        <div class="section-num">01 · Inbound</div>
+        <h2>Pakkelasting på transportbånd</h2>
+      </div>
+      <div class="rule-grid">
+        <div class="rule-card">
+          <div class="rule-label">Minimum vekt</div>
+          <div class="rule-value">0,2 kg</div>
+          <div class="rule-desc">Pakker under grensen avvises</div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-label">Maksimum vekt</div>
+          <div class="rule-value">25 kg</div>
+          <div class="rule-desc">Pakker over grensen avvises</div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-label">Maks lengde</div>
+          <div class="rule-value">0,8 m</div>
+          <div class="rule-desc">Gjelder lengste side</div>
+        </div>
+      </div>
+      <div class="info-box red">
+        <div class="ib-icon">🏷️</div>
+        <div class="ib-content">
+          <div class="ib-title">Etikett alltid opp</div>
+          <div class="ib-text">Plasser alltid pakken slik at etiketten peker <strong>oppover</strong>. Scannerne leser fra oversiden – feil orientering fører til at pakken ikke registreres.</div>
+        </div>
+      </div>
+      <div class="info-box red">
+        <div class="ib-icon">↔️</div>
+        <div class="ib-content">
+          <div class="ib-title">Lengderetning mot OmniMod</div>
+          <div class="ib-text">Pakkens <strong>lengste side</strong> skal peke <strong>inn mot OmniMod-pakkebåndet</strong>. Dette sikrer at pakken klarer vinkelen inn på OmniMod-bordet uten å kjøre seg fast.</div>
+        </div>
+      </div>
+      <div class="flow-visual">
+        <div class="flow-label">Inbound-flyt</div>
+        <div class="flow-row">
+          <div class="flow-box active">Legg pakke på bånd</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-box">Mettler-scanner + vektmåling</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-box">Dynatec-scanner</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-box ok">OmniMod-bordet</div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-box reject">Reject (ved feil)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 02 IKKE TILLATTE PAKKER -->
+    <div class="section">
+      <div class="section-title">
+        <div class="section-num">02 · Ikke tillatte pakker</div>
+        <h2>Pakker som ikke skal legges på pakkeanlegget</h2>
+      </div>
+      <p style="font-size:13px;color:var(--el-gray-dark);margin-bottom:16px;">Formålet er å unngå stopp, skader på gods, feilregistrering og reject. Kontroller alltid pakken mot disse kriteriene før innlegging på båndet.</p>
+      <div class="forbidden-table">
+
+        <div class="forbidden-row">
+          <div class="forbidden-icon">
+            <svg viewBox="0 0 80 70" xmlns="http://www.w3.org/2000/svg">
+              <rect x="18" y="8" width="44" height="34" rx="4" fill="none" stroke="#C8102E" stroke-width="3.5"/>
+              <circle cx="40" cy="25" r="11" fill="none" stroke="#C8102E" stroke-width="3"/>
+              <circle cx="40" cy="25" r="5" fill="#C8102E"/>
+              <line x1="14" y1="52" x2="66" y2="52" stroke="#C8102E" stroke-width="3" stroke-linecap="round"/>
+              <line x1="20" y1="59" x2="60" y2="59" stroke="#C8102E" stroke-width="2" stroke-linecap="round"/>
+              <line x1="26" y1="65" x2="54" y2="65" stroke="#C8102E" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="forbidden-text">Pakker som ikke kan leses ovenfra av pakkeskanner</div>
+        </div>
+
+        <div class="forbidden-row">
+          <div class="forbidden-icon">
+            <svg viewBox="0 0 80 70" xmlns="http://www.w3.org/2000/svg">
+              <line x1="8" y1="62" x2="72" y2="62" stroke="#C8102E" stroke-width="2.5" stroke-linecap="round"/>
+              <g transform="translate(40,34) rotate(28)">
+                <rect x="-18" y="-18" width="36" height="36" rx="2" fill="none" stroke="#C8102E" stroke-width="3.5"/>
+                <line x1="-18" y1="-18" x2="18" y2="18" stroke="#C8102E" stroke-width="1.5"/>
+                <line x1="18" y1="-18" x2="-18" y2="18" stroke="#C8102E" stroke-width="1.5"/>
+              </g>
+              <path d="M 22 20 Q 10 38 14 56" fill="none" stroke="#e06070" stroke-width="2" stroke-dasharray="4 3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="forbidden-text">Pakker som kan velte over på siden</div>
+        </div>
+
+        <div class="forbidden-row">
+          <div class="forbidden-icon">
+            <svg viewBox="0 0 80 70" xmlns="http://www.w3.org/2000/svg">
+              <line x1="8" y1="58" x2="72" y2="58" stroke="#C8102E" stroke-width="2.5" stroke-linecap="round"/>
+              <circle cx="40" cy="40" r="18" fill="none" stroke="#C8102E" stroke-width="3.5"/>
+              <circle cx="40" cy="58" r="2.5" fill="#C8102E"/>
+            </svg>
+          </div>
+          <div class="forbidden-text">Pakker som er runde, eller hvor hele pakkeflate ikke er i kontakt med OmniMod</div>
+        </div>
+
+        <div class="forbidden-row">
+          <div class="forbidden-icon">
+            <svg viewBox="0 0 80 70" xmlns="http://www.w3.org/2000/svg">
+              <rect x="16" y="16" width="48" height="38" rx="2" fill="none" stroke="#C8102E" stroke-width="3"/>
+              <polyline points="16,16 28,6 76,6 76,16" fill="none" stroke="#C8102E" stroke-width="2.5"/>
+              <line x1="64" y1="16" x2="76" y2="6" stroke="#C8102E" stroke-width="2.5"/>
+              <line x1="16" y1="66" x2="64" y2="66" stroke="#C8102E" stroke-width="2" stroke-linecap="round"/>
+              <polyline points="19,63 16,66 19,69" fill="none" stroke="#C8102E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="61,63 64,66 61,69" fill="none" stroke="#C8102E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <line x1="6" y1="16" x2="6" y2="54" stroke="#C8102E" stroke-width="2" stroke-linecap="round"/>
+              <polyline points="3,19 6,16 9,19" fill="none" stroke="#C8102E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <polyline points="3,51 6,54 9,51" fill="none" stroke="#C8102E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="forbidden-text">Pakker over disse målene: <strong>60L × 60B × 50H cm</strong></div>
+        </div>
+
+        <div class="forbidden-row">
+          <div class="forbidden-icon">
+            <svg viewBox="0 0 80 70" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="18" width="32" height="34" rx="17" fill="none" stroke="#C8102E" stroke-width="3"/>
+              <text x="20" y="31" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="700" fill="#C8102E">200</text>
+              <text x="20" y="43" text-anchor="middle" font-family="sans-serif" font-size="9" font-weight="700" fill="#C8102E">gram</text>
+              <line x1="42" y1="14" x2="42" y2="58" stroke="#e0c0c4" stroke-width="1.5"/>
+              <path d="M 52 24 Q 52 16 60 16 Q 68 16 68 24" fill="none" stroke="#C8102E" stroke-width="2.5" stroke-linecap="round"/>
+              <rect x="48" y="24" width="24" height="26" rx="2" fill="none" stroke="#C8102E" stroke-width="3"/>
+              <text x="60" y="34" text-anchor="middle" font-family="sans-serif" font-size="7.5" font-weight="700" fill="#C8102E">25</text>
+              <text x="60" y="44" text-anchor="middle" font-family="sans-serif" font-size="7.5" font-weight="700" fill="#C8102E">kg</text>
+            </svg>
+          </div>
+          <div class="forbidden-text">Pakker over <strong>25 kg</strong> eller under <strong>200 gram</strong></div>
+        </div>
+
+        <div class="forbidden-row">
+          <div class="forbidden-icon">
+            <svg viewBox="0 0 80 70" xmlns="http://www.w3.org/2000/svg">
+              <line x1="8" y1="60" x2="72" y2="60" stroke="#C8102E" stroke-width="2.5" stroke-linecap="round"/>
+              <polygon points="40,10 68,60 12,60" fill="none" stroke="#C8102E" stroke-width="3.5" stroke-linejoin="round"/>
+              <line x1="40" y1="10" x2="40" y2="60" stroke="#C8102E" stroke-width="1.5" stroke-dasharray="4 3"/>
+            </svg>
+          </div>
+          <div class="forbidden-text">Pakker som er spisse eller med en form som kan sette seg fast i inngang til OmniMod</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 03 OUTBOUND UI -->
+    <div class="section">
+      <div class="section-title">
+        <div class="section-num">03 · Outbound UI</div>
+        <h2>Tre driftsmoduser for uttak</h2>
+      </div>
+      <div class="mode-grid">
+        <div class="mode-card manual">
+          <div class="mode-header"><div class="mode-dot"></div>Manuell</div>
+          <div class="mode-body">Operatøren velger selv en sorteringsgruppe og ber om at den sendes til uttak. Full kontroll over rekkefølge og tidspunkt.</div>
+        </div>
+        <div class="mode-card auto">
+          <div class="mode-header"><div class="mode-dot"></div>Automatisk</div>
+          <div class="mode-body">OmniMod sender automatisk ut grupper som oppfyller kravet om <strong>minst 3 pakker</strong>. Grupper under kriteriet venter.</div>
+        </div>
+        <div class="mode-card autorel">
+          <div class="mode-header"><div class="mode-dot"></div>Automatisk frigjøring</div>
+          <div class="mode-body">OmniMod sender ut grupper fortløpende uten operatørens godkjenning. Høy gjennomstrømning.</div>
+        </div>
+      </div>
+      <div class="info-box green">
+        <div class="ib-icon">💡</div>
+        <div class="ib-content">
+          <div class="ib-title">Tips for god flyt</div>
+          <div class="ib-text">Fyll bordet godt opp før du begynner å tømme. En effektiv rytme er <em>fylle → tømme → fylle → tømme</em>. Dette gir OmniMod tid til å danne fullstendige grupper og reduserer ventetid ved outbound.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 04 PUT-TO-LIGHT -->
+    <div class="section">
+      <div class="section-title">
+        <div class="section-num">04 · Put-to-Light</div>
+        <h2>Plassering og bekreftelse av pakker</h2>
+      </div>
+      <ul class="step-list">
+        <li><div class="step-num">1</div><div>Pakke ankommer utbåndet. <strong>Put-to-Light-indikatoren</strong> over aktuelt bur lyser opp automatisk.</div></li>
+        <li><div class="step-num">2</div><div><strong>Skjermen over outbound</strong> viser hvilken lokasjon pakken tilhører – bruk den som ekstra veiledning.</div></li>
+        <li><div class="step-num">3</div><div>Plasser pakken i korrekt bur i henhold til lys og skjerm.</div></li>
+        <li><div class="step-num">4</div><div>Bekreft leveringen på <strong>én av to måter</strong>:<br>a) Trykk på <em>sort-knappen</em> på outbound-seksjonen, <strong>eller</strong><br>b) Bekreft på <em>tableten</em> som viser aktuell gruppe.</div></li>
+        <li><div class="step-num">5</div><div>Systemet henter neste gruppe. Bordet fylles opp automatisk fra ventende grupper.</div></li>
+      </ul>
+      <div class="info-box orange">
+        <div class="ib-icon">⚠️</div>
+        <div class="ib-content">
+          <div class="ib-title">Husk bekreftelse</div>
+          <div class="ib-text">Uten bekreftelse vil ikke neste gruppe frigis. Pakker som ikke bekreftes kan blokkere flyten i outbound-seksjonen.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 05 FEILSCENARIER -->
+    <div class="section">
+      <div class="section-title">
+        <div class="section-num">05 · Feilscenarier</div>
+        <h2>Kjente situasjoner og håndtering</h2>
+      </div>
+      <div class="error-list">
+        <div class="error-item warn-item">
+          <div class="error-icon">🔍</div>
+          <div class="error-desc">
+            <div class="error-title">Mettler-scanner leste ikke koden</div>
+            <div class="error-text">Skannerpunktet registrerte ikke strekkoden på pakken. Gå frem til scannerstasjonen og scan pakken manuelt med håndholdt scanner.</div>
+          </div>
+          <div class="error-action action-manual">Manuell scanning</div>
+        </div>
+        <div class="error-item critical">
+          <div class="error-icon">⚖️</div>
+          <div class="error-desc">
+            <div class="error-title">Vektbegrensning overskredet</div>
+            <div class="error-text">Pakken er utenfor tillatt vektintervall (0,2–25 kg). Systemet gir feilmelding og pakken stoppes ved målepunktet. Ta av pakken manuelt.</div>
+          </div>
+          <div class="error-action action-stop">Ta av ved målepunkt</div>
+        </div>
+        <div class="error-item warn-item">
+          <div class="error-icon">📷</div>
+          <div class="error-desc">
+            <div class="error-title">Dynatec-scanner klarte ikke å lese koden</div>
+            <div class="error-text">Et <strong>lydsignal avgis</strong> når Dynatec ikke klarer å lese strekkoden. Pakken sendes automatisk til reject og må skytes manuelt med PDA for å kontrollere korrekt lokasjon.</div>
+          </div>
+          <div class="error-action action-auto">→ Reject + PDA</div>
+        </div>
+        <div class="error-item warn-item">
+          <div class="error-icon">👁️</div>
+          <div class="error-desc">
+            <div class="error-title">OmniMod mistet kontroll på pakken</div>
+            <div class="error-text">Kameraene i OmniMod-bordet kan ikke lenger spore pakken. Den sendes automatisk til reject og må skytes manuelt med <strong>PDA</strong> for å kontrollere korrekt lokasjon.</div>
+          </div>
+          <div class="error-action action-auto">→ Reject + PDA</div>
+        </div>
+        <div class="error-item warn-item">
+          <div class="error-icon">🚫</div>
+          <div class="error-desc">
+            <div class="error-title">Pakken mangler destinasjonsbur</div>
+            <div class="error-text">Den innmeldte pakken har ingen tilknyttet sorteringsgruppe eller destinasjon i systemet. Pakken sendes til reject og må skytes manuelt med <strong>PDA</strong> for å kontrollere korrekt lokasjon.</div>
+          </div>
+          <div class="error-action action-auto">→ Reject + PDA</div>
+        </div>
+        <div class="error-item critical">
+          <div class="error-icon">📦</div>
+          <div class="error-desc">
+            <div class="error-title">Pakke på reject – manuell håndtering med PDA</div>
+            <div class="error-text">Skyt pakken manuelt med <strong>PDA</strong> og <strong>dobbeltsjekk lokasjon</strong> før pakken legges i korrekt bur. Feil plassering uten lokasjonskontroll kan gi sorteringsfeil.</div>
+          </div>
+          <div class="error-action action-manual">PDA + sjekk lokasjon</div>
+        </div>
+        <div class="error-item warn-item">
+          <div class="error-icon">🔆</div>
+          <div class="error-desc">
+            <div class="error-title">Lys-reflektorer langs inbound/outbound</div>
+            <div class="error-text">Reflektorer langs båndet kan trigge stoppesignal. Undersøk alltid stoppet i Dynatec-kontrollpanelet – det viser status for alle seksjonene på rullebåndet.</div>
+          </div>
+          <div class="error-action action-stop">Sjekk kontrollpanel</div>
+        </div>
+        <div class="error-item warn-item">
+          <div class="error-icon">🖥️</div>
+          <div class="error-desc">
+            <div class="error-title">Uhell – feilmeldinger i Dynatec-kontrollpanel</div>
+            <div class="error-text">Etter et uhell eller utilsiktet stopp kan det ligge aktive feilmeldinger i panelet. Disse må kvitteres ut (cleared) før båndet kan gjenoppta normal drift.</div>
+          </div>
+          <div class="error-action action-stop">Clear feilmeldinger</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUICK REF -->
+    <div class="quick-ref">
+      <div class="quick-ref-label">⚡ Huskeliste – rask referanse</div>
+      <div class="quick-ref-grid">
+        <div class="quick-ref-item"><span class="tick">✓</span> Etikett peker alltid opp</div>
+        <div class="quick-ref-item"><span class="tick">✓</span> Bekreft outbound-leveranse etter plassering</div>
+        <div class="quick-ref-item"><span class="tick">✓</span> Lengderetning mot OmniMod-pakkebåndet</div>
+        <div class="quick-ref-item"><span class="tick">✓</span> Reject-pakker: skyt med PDA og sjekk lokasjon</div>
+        <div class="quick-ref-item"><span class="tick">✓</span> Vekt: 0,2–25 kg · Maks lengde: 0,8 m</div>
+        <div class="quick-ref-item"><span class="tick">✓</span> Stopp? Sjekk Dynatec-kontrollpanel</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <div>OmniMod Sorteringsanlegg · <strong>Ramberg Langhus</strong> · Operatøropplæring</div>
+    <div><strong>Element Logic AS</strong> · Pilot v1.0</div>
+  </div>
+
+</div>
+</body>
+</html>
